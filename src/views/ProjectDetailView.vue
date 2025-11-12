@@ -558,15 +558,17 @@ const getImagePath = (image: any): string => {
   
   // Если это строка (как в ProjectCard)
   if (typeof image === 'string') {
-    return image.startsWith('http') ? image : `http://localhost:8000/uploads/${image}`
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
+    return image.startsWith('http') ? image : `${API_URL}/uploads/${image}`
   }
   
   // Если это объект с image_path
   if (image.image_path) {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
     const path = image.image_path
     if (path.startsWith('http')) return path
-    if (path.startsWith('/')) return `http://localhost:8000${path}`
-    return `http://localhost:8000/uploads/${path}`
+    if (path.startsWith('/')) return `${API_URL}${path}`
+    return `${API_URL}/uploads/${path}`
   }
   
   return '/placeholder-image.svg'
