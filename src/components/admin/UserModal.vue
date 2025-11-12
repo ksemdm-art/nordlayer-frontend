@@ -24,6 +24,25 @@
             </h3>
 
             <form @submit.prevent="saveUser" class="space-y-6">
+              <!-- Username -->
+              <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">
+                  Имя пользователя *
+                </label>
+                <input
+                  id="username"
+                  v-model="form.username"
+                  type="text"
+                  required
+                  :disabled="isEdit"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  placeholder="username"
+                />
+                <p v-if="isEdit" class="mt-1 text-sm text-gray-500">
+                  Имя пользователя нельзя изменить после создания
+                </p>
+              </div>
+
               <!-- Email -->
               <div>
                 <label for="email" class="block text-sm font-medium text-gray-700">
@@ -181,6 +200,7 @@ const loading = ref(false)
 const error = ref('')
 
 const form = reactive({
+  username: '',
   email: '',
   full_name: '',
   password: '',
@@ -220,6 +240,7 @@ const saveUser = async () => {
 onMounted(() => {
   if (props.isEdit && props.user) {
     Object.assign(form, {
+      username: (props.user as any).username || '',
       email: props.user.email,
       full_name: props.user.full_name || '',
       role: props.user.role,
