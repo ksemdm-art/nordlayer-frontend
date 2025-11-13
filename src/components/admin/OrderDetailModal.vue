@@ -817,28 +817,15 @@ const downloadFileInfo = async (fileInfo: any) => {
 
 const downloadGalleryProject = async (item: any) => {
   try {
-    // Сначала получим полную информацию о проекте из галереи
-    const response = await api.get(`/gallery/${item.id}`)
-    const project = response.data.data || response.data
-    
-    if (project.stl_file) {
-      // Если есть STL файл, скачиваем его
-      const fileResponse = await fetch(project.stl_file)
-      if (!fileResponse.ok) {
-        throw new Error(`HTTP error! status: ${fileResponse.status}`)
-      }
-      
-      const blob = await fileResponse.blob()
-      const url = window.URL.createObjectURL(blob)
+    // Если у нас уже есть прямая ссылка на STL, используем её
+    if (item.stl_file) {
       const link = document.createElement('a')
-      link.href = url
-      link.download = `${project.title || item.title}.stl`
+      link.href = item.stl_file
+      link.download = `${item.title}.stl`
+      link.target = '_blank'
       document.body.appendChild(link)
       link.click()
-      
-      // Cleanup
       document.body.removeChild(link)
-      window.URL.revokeObjectURL(url)
     } else {
       alert('STL файл для этого проекта не найден')
     }
